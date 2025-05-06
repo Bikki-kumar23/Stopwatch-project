@@ -1,0 +1,51 @@
+const display = document.getElementById("display");
+const startBtn = document.getElementById("start");
+const stopBtn = document.getElementById("stop");
+const resetBtn = document.getElementById("reset");
+
+let startTime = null;
+let elapsed = 0;
+let interval = null;
+
+function formatTime(ms) {
+  let date = new Date(ms);
+  let hrs = String(date.getUTCHours()).padStart(2, "0");
+  let mins = String(date.getUTCMinutes()).padStart(2, "0");
+  let secs = String(date.getUTCSeconds()).padStart(2, "0");
+  let milli = String(date.getUTCMilliseconds()).padStart(3, "0");
+  return `${hrs}:${mins}:${secs}.${milli}`;
+}
+
+function updateDisplay() {
+  display.textContent = formatTime(elapsed);
+}
+
+startBtn.onclick = () => {
+  startTime = Date.now() - elapsed;
+  interval = setInterval(() => {
+    elapsed = Date.now() - startTime;
+    updateDisplay();
+  }, 10);
+
+  startBtn.disabled = true;
+  stopBtn.disabled = false;
+  resetBtn.disabled = true;
+};
+
+stopBtn.onclick = () => {
+  clearInterval(interval);
+  interval = null;
+
+  startBtn.disabled = false;
+  stopBtn.disabled = true;
+  resetBtn.disabled = false;
+};
+
+resetBtn.onclick = () => {
+  elapsed = 0;
+  updateDisplay();
+
+  startBtn.disabled = false;
+  stopBtn.disabled = true;
+  resetBtn.disabled = true;
+};
